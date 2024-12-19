@@ -73,6 +73,7 @@ def udashboard(UID):
 
     cursor = db.cursor(dictionary=True)
     
+    #debits
     cursor.execute("SELECT ba.accountID, balance FROM debits LEFT JOIN bank_accounts AS ba ON debits.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
     result = cursor.fetchall()
     debit_accounts_data = result
@@ -80,14 +81,42 @@ def udashboard(UID):
         account['balance'] = float(account['balance'])  # или str(account['balance'])
     print(debit_accounts_data)
 
+    #deposits
     cursor.execute("SELECT ba.accountID, close_date, percent, balance FROM deposits LEFT JOIN bank_accounts AS ba ON deposits.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
     result = cursor.fetchall()
     deposit_accounts_data = result
     for account in deposit_accounts_data:
         account['balance'] = float(account['balance'])  # или str(account['balance'])
     print(deposit_accounts_data)
+    
+    #saving
+    cursor.execute("SELECT ba.accountID, percent, `limit`, spent_limit, balance FROM saving_accounts AS sa LEFT JOIN bank_accounts AS ba ON sa.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
+    result = cursor.fetchall()
+    saving_accounts_data = result
+    for account in saving_accounts_data:
+        account['spent_limit'] = float(account['spent_limit'])
+        account['balance'] = float(account['balance'])  # или str(account['balance'])
+        account['spent_limit'] = account['limit'] - account['spent_limit']
+    print(saving_accounts_data)
 
-    return render_template('user_dashboard.html', debit_accounts=debit_accounts_data, deposit_accounts = deposit_accounts_data)
+    #credit card
+    cursor.execute("SELECT ba.accountID, `limit`, debt, balance FROM credit_card AS cc LEFT JOIN bank_accounts AS ba ON cc.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
+    result = cursor.fetchall()
+    cc_accounts_data = result
+    for account in cc_accounts_data:
+        account['debt'] = float(account['debt'])
+        account['balance'] = float(account['balance'])  # или str(account['balance'])
+    print(cc_accounts_data)
+    
+    #credit
+    cursor.execute("SELECT ba.accountID, expire_date, debt FROM credit LEFT JOIN bank_accounts AS ba ON credit.creditID = ba.accountID WHERE ba.UID=%s", (UID,))
+    result = cursor.fetchall()
+    cc_accounts_data = result
+    for account in cc_accounts_data:
+        account['debt'] = float(account['debt'])
+    print(cc_accounts_data)
+
+    return render_template('user_dashboard.html', debit_accounts=debit_accounts_data, deposit_accounts = deposit_accounts_data, saving_accounts = saving_accounts_data, cc_accounts = cc_accounts_data)
 
 if __name__ == '__main__':
     app.run(port=5050, debug=False)

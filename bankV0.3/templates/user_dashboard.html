@@ -64,5 +64,103 @@
         </div>
         {% endif %}
     </div>
+
+    <div class="container mt-5">
+        <h1>Saving Accounts List</h1>
+
+        {% if saving_accounts %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Account Number</th>
+                    <th>Percent</th>
+                    <th>Limit</th>
+                    <th>Remaining Limit</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in saving_accounts %}
+                <tr>
+                    <td>{{ account.accountID }}</td>
+                    <td>{{ account.percent }}</td>
+                    <td>{{ account.limit }}</td>
+                    <td>{{ account.spent_limit }}</td>
+                    <td>{{ account.balance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            No saving accounts found.
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container mt-5">
+        <h1>Credit Card Accounts List</h1>
+
+        {% if cc_accounts %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Account Number</th>
+                    <th>Limit</th>
+                    <th>Debt</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in cc_accounts %}
+                <tr>
+                    <td>{{ account.accountID }}</td>
+                    <td>{{ account.limit }}</td>
+                    <td>{{ account.debt }}</td>
+                    <td>{{ account.balance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            No credit card accounts found.
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container mt-5">
+        <h1>Credit Accounts List</h1>
+
+        {% if cc_accounts %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Account Number</th>
+                    <th>Expire Date</th>
+                    <th>Debt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in credit_accounts %}
+                <tr>
+                    <td>{{ account.creditID }}</td>
+                    <td>{{ account.expire_date }}</td>
+                    <td>{{ account.debt }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            No credit accounts found.
+        </div>
+        {% endif %}
+    </div>
+
+
+
+
+
 </body>
 </html>
