@@ -1,3 +1,4 @@
+from decimal import Decimal
 from os import name
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
@@ -115,8 +116,45 @@ def udashboard(UID):
     for account in cc_accounts_data:
         account['debt'] = float(account['debt'])
     print(cc_accounts_data)
+    
+    #operations
+    cursor.execute("SELECT accountID, type, date, summ FROM operations AS op WHERE op.UID=%s ORDER BY date DESC", (UID,))
+    result = cursor.fetchall()
+    operations_data = result
+    for account in operations_data:
+        if account['type'] == 1:
+            account['type'] = 'deposit'
+        else:
+            account['type'] = 'withdraw'
+        account['summ'] = float(account['summ'])
+    #print(operations_data)
 
-    return render_template('user_dashboard.html', debit_accounts=debit_accounts_data, deposit_accounts = deposit_accounts_data, saving_accounts = saving_accounts_data, cc_accounts = cc_accounts_data)
+    return render_template('user_dashboard.html', debit_accounts=debit_accounts_data, deposit_accounts = deposit_accounts_data, saving_accounts = saving_accounts_data, cc_accounts = cc_accounts_data, operations = operations_data)
 
+@app.route('/execute_transaction', methods=['GET', 'POST'])
+def execute_transaction():
+    if request.method == 'POST':
+        accountID = request.form['accountID']
+        transaction_type = request.form['transaction_type']
+        amount = request.form['amount']
+        print(accountID)
+
+        try:
+            cursor = db.cursor()
+            # Вызываем хранимую процедуру
+            cursor.callproc('add_operation', [int(transaction_type), int(accountID),  Decimal(amount)])
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            return f"Error: {str(e)}"
+        
+        referrer = request.referrer
+        if referrer:
+            return redirect(referrer)
+        else:
+            return redirect(url_for('/'))  # Если referrer отсутствует
+    else:
+        return render_template('transaction.html')
+    
 if __name__ == '__main__':
     app.run(port=5050, debug=False)
