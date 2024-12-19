@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Debit Accounts List</h1>
+
+        {% if debit_accounts %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Account Number</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in debit_accounts %}
+                <tr>
+                    <td>{{ account.accountID }}</td>
+                    <td>{{ account.balance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            No debit accounts found.
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container mt-5">
+        <h1>Deposit Accounts List</h1>
+
+        {% if deposit_accounts %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Account Number</th>
+                    <th>Close Date</th>
+                    <th>Percent</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in deposit_accounts %}
+                <tr>
+                    <td>{{ account.accountID }}</td>
+                    <td>{{ account.close_date }}</td>
+                    <td>{{ account.percent }}</td>
+                    <td>{{ account.balance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            No deposit accounts found.
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
