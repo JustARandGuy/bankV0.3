@@ -1,6 +1,6 @@
 from decimal import Decimal
 from os import name
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, g
 import mysql.connector
 
 app = Flask(__name__)
@@ -13,6 +13,53 @@ db = mysql.connector.connect(
     database="bank",
     charset='utf8mb4'
 )
+
+def execute_query(query, params=None, dictionary=True):
+    #Функция для выполнения SQL-запроса с использованием глобального подключения
+    db = get_db()
+    cursor = db.cursor(dictionary=dictionary)
+    cursor.execute(query, params or ())
+    return cursor.fetchall()
+
+def get_user_info(uid):
+    #Функция получения ифны о пользователе
+    query = "SELECT * FROM users WHERE UID=%s"
+    result = execute_query(query, (uid,))
+    if result:
+        return {
+            "name": result[0]["name"],
+            "surname": result[0]["surname"],
+            "birthdate": result[0]["birth_date"],
+            "bankdate": result[0]["bank_date"]
+        }
+    return {}
+
+def get_account_data(query, uid):
+    #Получить данные счетов.
+    data = execute_query(query, (uid,))
+    for account in data:
+        for key, value in account.items():
+            if isinstance(value, Decimal):  # Если используется тип Decimal
+                account[key] = float(value)
+    return data
+
+def get_db():
+    #Устанавливает или возвращает существующее подключение к базе данных
+    if 'db' not in g:
+        g.db = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='',
+            database='bank'
+        )
+    return g.db
+
+@app.teardown_appcontext
+def close_db(exception):
+    #Закрывает подключение к базе данных после обработки запроса
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
 
 @app.route('/')
 def login():
@@ -61,75 +108,56 @@ def adashboard(UID):
 
 @app.route('/user_dashboard/<int:UID>')
 def udashboard(UID):
-    db.reconnect(attempts=3, delay=2)
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE UID=%s", (UID,))
-    result = cursor.fetchone()
-    
-    name = result[2]
-    surname = result[3]
-    birthdate = result[5]
-    bankday = result[11]
-    print('Request from users: ', result, '\n')
+    db = get_db()
 
-    cursor = db.cursor(dictionary=True)
+    user_info = get_user_info(UID)
     
-    #debits
-    cursor.execute("SELECT ba.accountID, balance FROM debits LEFT JOIN bank_accounts AS ba ON debits.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
-    result = cursor.fetchall()
-    debit_accounts_data = result
-    for account in debit_accounts_data:
-        account['balance'] = float(account['balance'])  # или str(account['balance'])
-    print(debit_accounts_data)
+    debit_accounts_query = """
+        SELECT ba.accountID, balance
+        FROM debits
+        LEFT JOIN bank_accounts AS ba ON debits.accountID = ba.accountID
+        WHERE ba.UID=%s
+    """
+    deposit_accounts_query = """
+        SELECT ba.accountID, close_date, percent, balance
+        FROM deposits
+        LEFT JOIN bank_accounts AS ba ON deposits.accountID = ba.accountID
+        WHERE ba.UID=%s
+    """
+    saving_accounts_query = """
+        SELECT ba.accountID, percent, `limit`, spent_limit, balance
+        FROM saving_accounts AS sa
+        LEFT JOIN bank_accounts AS ba ON sa.accountID = ba.accountID
+        WHERE ba.UID=%s
+    """
+    credit_card_query = """
+        SELECT ba.accountID, `limit`, debt, balance
+        FROM credit_card AS cc
+        LEFT JOIN bank_accounts AS ba ON cc.accountID = ba.accountID
+        WHERE ba.UID=%s
+    """
+    operations_query = """
+        SELECT accountID, type, date, summ
+        FROM operations AS op
+        WHERE op.UID=%s
+        ORDER BY date DESC
+    """
 
-    #deposits
-    cursor.execute("SELECT ba.accountID, close_date, percent, balance FROM deposits LEFT JOIN bank_accounts AS ba ON deposits.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
-    result = cursor.fetchall()
-    deposit_accounts_data = result
-    for account in deposit_accounts_data:
-        account['balance'] = float(account['balance'])  # или str(account['balance'])
-    print(deposit_accounts_data)
-    
-    #saving
-    cursor.execute("SELECT ba.accountID, percent, `limit`, spent_limit, balance FROM saving_accounts AS sa LEFT JOIN bank_accounts AS ba ON sa.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
-    result = cursor.fetchall()
-    saving_accounts_data = result
-    for account in saving_accounts_data:
-        account['spent_limit'] = float(account['spent_limit'])
-        account['balance'] = float(account['balance'])  # или str(account['balance'])
-        account['spent_limit'] = account['limit'] - account['spent_limit']
-    print(saving_accounts_data)
+    debit_accounts = get_account_data(debit_accounts_query, UID)
+    deposit_accounts = get_account_data(deposit_accounts_query, UID)
+    saving_accounts = get_account_data(saving_accounts_query, UID)
+    credit_cards = get_account_data(credit_card_query, UID)
+    operations = get_account_data(operations_query, UID)
 
-    #credit card
-    cursor.execute("SELECT ba.accountID, `limit`, debt, balance FROM credit_card AS cc LEFT JOIN bank_accounts AS ba ON cc.accountID = ba.accountID WHERE ba.UID=%s", (UID,))
-    result = cursor.fetchall()
-    cc_accounts_data = result
-    for account in cc_accounts_data:
-        account['debt'] = float(account['debt'])
-        account['balance'] = float(account['balance'])  # или str(account['balance'])
-    print(cc_accounts_data)
-    
-    #credit
-    cursor.execute("SELECT ba.accountID, expire_date, debt FROM credit LEFT JOIN bank_accounts AS ba ON credit.creditID = ba.accountID WHERE ba.UID=%s", (UID,))
-    result = cursor.fetchall()
-    cc_accounts_data = result
-    for account in cc_accounts_data:
-        account['debt'] = float(account['debt'])
-    print(cc_accounts_data)
-    
-    #operations
-    cursor.execute("SELECT accountID, type, date, summ FROM operations AS op WHERE op.UID=%s ORDER BY date DESC", (UID,))
-    result = cursor.fetchall()
-    operations_data = result
-    for account in operations_data:
-        if account['type'] == 1:
-            account['type'] = 'deposit'
-        else:
-            account['type'] = 'withdraw'
-        account['summ'] = float(account['summ'])
-    #print(operations_data)
-
-    return render_template('user_dashboard.html', debit_accounts=debit_accounts_data, deposit_accounts = deposit_accounts_data, saving_accounts = saving_accounts_data, cc_accounts = cc_accounts_data, operations = operations_data)
+    return render_template(
+        'user_dashboard.html',
+        user_info=user_info,
+        debit_accounts=debit_accounts,
+        deposit_accounts=deposit_accounts,
+        saving_accounts=saving_accounts,
+        credit_cards=credit_cards,
+        operations=operations
+    )
 
 @app.route('/execute_transaction', methods=['GET', 'POST'])
 def execute_transaction():
