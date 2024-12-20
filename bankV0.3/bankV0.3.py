@@ -184,5 +184,63 @@ def execute_transaction():
     else:
         return render_template('transaction.html')
     
+@app.route('/user_dashboard/accounts/<int:AID>')
+def accounts(AID):
+    #Определяет куда переправить
+    
+    sql= """SELECT type FROM bank_accounts WHERE accountID = %s"""
+    acc_type = execute_query(sql, (AID,))
+
+    if acc_type == 1:
+        return redirect(url_for('debit_account', AID=AID))
+    elif acc_type == 2:
+        return redirect(url_for('deposit_account', AID=AID))
+    elif acc_type == 3:
+        return redirect(url_for('saving_account', AID=AID))
+    elif acc_type == 4:
+        return redirect(url_for('cc_account', AID=AID))
+    elif acc_type == 5:
+        return redirect(url_for('credit_account', AID=AID))
+    else:
+        print("account type not found", AID, ' ', acc_type)
+        referrer = request.referrer
+        if referrer:
+            return redirect(referrer)
+        else:
+            return redirect(url_for('/'))
+        
+    return 0
+
+@app.route('/user_dashboard/accounts/debit/<int:AID>')
+def debit_account(AID):
+    
+    sql = """SELECT * FROM debits WHERE accountID = %s LIMIT 1"""
+    data = execute_query(sql, (AID,))
+    
+    balance = float(data[0]['balance'])
+
+    return render_template('debit.html')
+
+@app.route('/user_dashboard/accounts/deposit/<int:AID>')
+def deposit_account(AID):
+    return 0
+
+@app.route('/user_dashboard/accounts/saving/<int:AID>')
+def saving_account(AID):
+    return 0
+
+@app.route('/user_dashboard/accounts/creditcard/<int:AID>')
+def cc_account(AID):
+    return 0
+
+@app.route('/user_dashboard/accounts/credit/<int:AID>')
+def credit_account(AID):
+    return 0
+
+@app.route('/user_dashboard/payments')
+def payments(AID):
+    return 0
+
+
 if __name__ == '__main__':
     app.run(port=5050, debug=False)

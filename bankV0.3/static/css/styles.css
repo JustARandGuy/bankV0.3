@@ -1,0 +1,19 @@
+body {
+    margin: 0; /* Убираем отступы, чтобы прямоугольник начинался строго в левом верхнем углу */
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100vh; /* Высота экрана */
+    background-color: #f0f0f0; /* Фон страницы */
+}
+
+.rectangle {
+    width: 200px; /* Ширина прямоугольника */
+    height: 100px; /* Высота прямоугольника */
+    background-color: #007bff; /* Цвет прямоугольника */
+    border-radius: 15px; /* Закругленные края */
+    position: absolute;
+    top: 10px; /* Отступ сверху */
+    left: 10px; /* Отступ слева */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
+}

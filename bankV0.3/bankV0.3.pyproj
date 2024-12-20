@@ -24,11 +24,17 @@
     <Compile Include="bankV0.3.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="static\" />
+    <Folder Include="static\css\" />
+    <Folder Include="static\js\" />
+    <Folder Include="static\images\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="static\css\styles.css" />
     <Content Include="templates\admin_dashboard.html" />
     <Content Include="templates\dashboard.html" />
+    <Content Include="templates\debit.html" />
     <Content Include="templates\login.html" />
     <Content Include="templates\user_dashboard.html" />
   </ItemGroup>
