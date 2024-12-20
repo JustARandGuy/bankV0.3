@@ -217,9 +217,14 @@ def debit_account(AID):
     sql = """SELECT * FROM debits WHERE accountID = %s LIMIT 1"""
     data = execute_query(sql, (AID,))
     
+    
     balance = float(data[0]['balance'])
+    sql = """SELECT summ, date FROM operations WHERE accountID = %s AND type = 1"""
+    deposit_operations = execute_query(sql, (AID,))
+    sql = """SELECT summ, date FROM operations WHERE accountID = %s AND type = 2"""
+    withdraw_operations = execute_query(sql, (AID,))
 
-    return render_template('debit.html', balance = balance)
+    return render_template('debit.html', balance = balance, deposit_operations = deposit_operations, withdraw_operations = withdraw_operations)
 
 @app.route('/user_dashboard/accounts/deposit/<int:AID>')
 def deposit_account(AID):
