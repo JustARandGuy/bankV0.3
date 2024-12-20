@@ -219,7 +219,7 @@ def debit_account(AID):
     
     balance = float(data[0]['balance'])
 
-    return render_template('debit.html')
+    return render_template('debit.html', balance = balance)
 
 @app.route('/user_dashboard/accounts/deposit/<int:AID>')
 def deposit_account(AID):
