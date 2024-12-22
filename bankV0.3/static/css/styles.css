@@ -118,3 +118,10 @@
     align-content: start;
     align-items: start;
 }
+
+
+
+.daform {
+    margin: 20px;
+    user-select: none;
+}

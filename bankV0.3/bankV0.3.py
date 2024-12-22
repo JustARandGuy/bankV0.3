@@ -5,7 +5,6 @@ import mysql.connector
 
 app = Flask(__name__)
 
-# ����������� � ���� ������
 db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -15,14 +14,14 @@ db = mysql.connector.connect(
 )
 
 def execute_query(query, params=None, dictionary=True):
-    #������� ��� ���������� SQL-������� � �������������� ����������� �����������
+    
     db = get_db()
     cursor = db.cursor(dictionary=dictionary)
     cursor.execute(query, params or ())
     return cursor.fetchall()
 
 def get_user_info(uid):
-    #������� ��������� ���� � ������������
+    
     query = "SELECT * FROM users WHERE UID=%s"
     result = execute_query(query, (uid,))
     if result:
@@ -39,12 +38,12 @@ def get_account_data(query, uid):
     data = execute_query(query, (uid,))
     for account in data:
         for key, value in account.items():
-            if isinstance(value, Decimal):  # ���� ������������ ��� Decimal
+            if isinstance(value, Decimal):  
                 account[key] = float(value)
     return data
 
 def get_db():
-    #������������� ��� ���������� ������������ ����������� � ���� ������
+    
     if 'db' not in g:
         g.db = mysql.connector.connect(
             host='localhost',
@@ -56,14 +55,14 @@ def get_db():
 
 @app.teardown_appcontext
 def close_db(exception):
-    #��������� ����������� � ���� ������ ����� ��������� �������
+ 
     db = g.pop('db', None)
     if db is not None:
         db.close()
 
 @app.route('/')
 def login():
-    print("Accessing login page")  # ��� ��������
+    print("Accessing login page")  
     return render_template('login.html')
 
 
@@ -71,23 +70,21 @@ def login():
 def auth():
     phone = request.form['phone']
     password = request.form['password']
-
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE phone_number=%s AND password=%s", (phone, password))
-    user = cursor.fetchone()
-    print(cursor.fetchone())
     
-    cursor.execute("SELECT UID FROM users WHERE phone_number=%s", (phone,))
-    UID1 = cursor.fetchone()[0]  # ��������� �������� UID
-
-    if user:
-        cursor.execute("SELECT role FROM users WHERE phone_number=%s", (phone,))
-        a_role = cursor.fetchone()
-        print("tyt", a_role)
-        if a_role[0] == "admin":
-            return redirect(url_for('adashboard', UID=UID1))  # �������� UID ��� ��������
+    sql = """
+    SELECT * FROM users
+    WHERE phone_number = %s AND password = %s
+"""
+    user = execute_query(sql,(phone, password))[0]
+    UID = user['UID']
+    
+    if UID:
+        a_role = user['role']
+        print('role: ', a_role)
+        if a_role == "admin":
+            return redirect(url_for('adashboard', UID=UID))  
         else:
-            return redirect(url_for('udashboard', UID=UID1))
+            return redirect(url_for('udashboard', UID=UID))
     else:
         return "Invalid credentials"
 
@@ -97,14 +94,58 @@ def adashboard(UID):
     cursor.execute("SELECT * FROM users WHERE UID=%s", (UID,))
     result = cursor.fetchone()
     
-    name = result[2]
-    surname = result[3]
-    birthdate = result[5]
-    bankday = result[11]
+    user_info = get_user_info(UID)
+    
+
     print('Request from users: ', result, '\n')
 
 
     return render_template('admin_dashboard.html')
+
+@app.route('/add_account', methods=['POST'])
+def add_account():
+    db = get_db()
+    cursor = db.cursor()
+    account_type = request.form.get('account_type')  # Получение выбранного типа аккаунта
+    
+    
+    if account_type == 'debit':
+        user_id = request.form.get('user_id')
+        cursor.callproc('add_debit', [user_id, 1])
+        
+    elif account_type == 'deposit':
+        user_id = request.form.get('user_id')
+        amount = request.form.get('deposit_amount')
+        period = request.form.get('deposit_period')
+        percent = request.form.get('deposit_percent')
+        cursor.callproc('add_deposit', [user_id, amount, period, percent, 1])
+    
+    elif account_type == 'saving':
+        user_id = request.form.get('user_id')
+        percent = request.form.get('percent')
+        cursor.callproc('add_saving_account', [user_id, percent, 1])
+    
+    elif account_type == 'cc':
+        user_id = request.form.get('user_id')
+        percent = request.form.get('percent')
+        limit = request.form.get('limit')
+        cursor.callproc('add_credit_card', [user_id, percent, limit])
+    
+    elif account_type == 'credit':
+        user_id = request.form.get('user_id')
+        amount = request.form.get('amount')
+        period = request.form.get('period')
+        percent = request.form.get('percent')
+        cursor.callproc('add_credit', [user_id, amount, percent, period])
+    
+    else:
+        return "Invalid option selected", 400
+    
+    referrer = request.referrer
+    if referrer:
+        return redirect(referrer)
+    else:
+        return redirect(url_for('/'))  # ���� referrer �����������
 
 @app.route('/user_dashboard/<int:UID>')
 def udashboard(UID):
