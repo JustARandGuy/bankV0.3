@@ -21,25 +21,43 @@
             <a class="nav-link" href="#">Operations</a>
         </li>
     </ul>
-
+        
     <div class="grid-container">
-        <div class="content">
+        <div class="content2">
             <div class="balance_rectangle">
                 <p class="balance_text">{{ balance }} RUB</p>
             </div>
 
             <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn custom-button">Deposit</button>
-                <button type="button" class="btn custom-button">Withdraw</button>
+                    <button type="button" class="btn custom-button">Deposit</button>
+                    <button type="button" class="btn custom-button">Withdraw</button>
+            </div>
+        </div>
+        <div class="content1">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Operation Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for operation in operations %}
+                        <tr>
+                            <td>{{ operation.op_type}}</td>
+                            <td>{{ operation.summ }}</td>
+                            <td>{{ operation.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="balance_rectangle">
-         <p class="balance_text">{{ balance }} RUB</p>
-        </div>
-    </div> 
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

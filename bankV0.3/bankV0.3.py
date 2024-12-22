@@ -1,3 +1,4 @@
+import datetime
 from decimal import Decimal
 from os import name
 from flask import Flask, render_template, request, redirect, url_for, g
@@ -41,6 +42,8 @@ def get_account_data(query, uid):
         for key, value in account.items():
             if isinstance(value, Decimal):  # Если используется тип Decimal
                 account[key] = float(value)
+            if isinstance(value, datetime.date):
+                account[key] = account[key].strftime('%Y-%m-%d')
     return data
 
 def get_db():
@@ -83,7 +86,7 @@ def auth():
     if user:
         cursor.execute("SELECT role FROM users WHERE phone_number=%s", (phone,))
         a_role = cursor.fetchone()
-        print("tyt", a_role)
+        print("role: ", a_role)
         if a_role[0] == "admin":
             return redirect(url_for('adashboard', UID=UID1))  # Передаем UID как параметр
         else:
@@ -142,12 +145,25 @@ def udashboard(UID):
         WHERE op.UID=%s
         ORDER BY date DESC
     """
+    
+    credit_query = """
+        SELECT creditID, expire_date, debt
+        FROM credit
+        LEFT JOIN bank_accounts AS ba ON credit.creditID = ba.accountID
+        WHERE ba.UID=%s
+    """
 
     debit_accounts = get_account_data(debit_accounts_query, UID)
     deposit_accounts = get_account_data(deposit_accounts_query, UID)
     saving_accounts = get_account_data(saving_accounts_query, UID)
     credit_cards = get_account_data(credit_card_query, UID)
+    credit_accounts = get_account_data(credit_query, UID)
     operations = get_account_data(operations_query, UID)
+    
+    print(type(debit_accounts))
+    for account in debit_accounts:
+        print(account)
+
 
     return render_template(
         'user_dashboard.html',
@@ -155,7 +171,8 @@ def udashboard(UID):
         debit_accounts=debit_accounts,
         deposit_accounts=deposit_accounts,
         saving_accounts=saving_accounts,
-        credit_cards=credit_cards,
+        cc_accounts=credit_cards,
+        credit_accounts = credit_accounts,
         operations=operations
     )
 
@@ -221,10 +238,16 @@ def debit_account(AID):
     balance = float(data[0]['balance'])
     sql = """SELECT summ, date FROM operations WHERE accountID = %s AND type = 1"""
     deposit_operations = execute_query(sql, (AID,))
-    sql = """SELECT summ, date FROM operations WHERE accountID = %s AND type = 2"""
-    withdraw_operations = execute_query(sql, (AID,))
+    sql = """SELECT summ, date, type AS op_type FROM operations WHERE accountID = %s"""
+    operations = execute_query(sql, (AID,))
+    
+    for operation in operations:
+        if operation['op_type'] == 1:
+            operation['op_type'] = 'Deposit'
+        else:
+            operation['op_type'] = 'Withdraw'
 
-    return render_template('debit.html', balance = balance, deposit_operations = deposit_operations, withdraw_operations = withdraw_operations)
+    return render_template('debit.html', balance = balance, operations =  operations)
 
 @app.route('/user_dashboard/accounts/deposit/<int:AID>')
 def deposit_account(AID):

@@ -1,6 +1,6 @@
 
 .balance_rectangle {
-    width: 260px; /* Ширина прямоугольника */
+    width: 240px; /* Ширина прямоугольника */
     height: 80px; /* Высота прямоугольника */
     background-color: #98c4e3; /* Цвет прямоугольника */
     border-radius: 20px; /* Закругленные края */
@@ -82,6 +82,7 @@
 }
 
 .custom-button {
+    max-width: 120px; /* Максимальная ширина кнопки */
     width: 120px; /* Фиксированная ширина кнопки */
     height: 50px; /* Высота кнопки */
     font-size: 18px; /* Размер текста */
@@ -91,6 +92,7 @@
     border: none; /* Убираем стандартную границу */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для кнопки */
     color: #fff; /* Цвет текста */
+    margin-left: 35px;
     /* Убираем позиционирование, чтобы кнопка находилась в ячейке сетки */
 }
 
@@ -99,22 +101,31 @@
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Увеличиваем тень при наведении */
 }
 
-.content {
+.content2 {
     display: grid;
     grid-template-rows: 50% 50%; /* Две строки */
     gap: 20px; /* Отступ между строками */
-    background-color: black;
+    /*background-color: black;*/
 }
 
-
+.content1 {
+    display: grid;
+    grid-template-rows: 50% 50%; /* Две строки */
+    gap: 20px; /* Отступ между строками */
+    /*background-color: wheat;*/
+}
 
 .grid-container {
     display: grid;
     grid-template-columns: 40% 60%;
-    align-content: center;
+    
     margin: 20px;
-    background-color: darkslateblue;
+    /*background-color: darkslateblue;*/
     height: 100vh; /* Высота контейнера равна высоте экрана */
     align-content: start;
     align-items: start;
+}
+
+.table-striped {
+    user-select: none;
 }

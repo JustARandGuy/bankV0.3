@@ -18,6 +18,8 @@
         </li>
     </ul>
 
+    <pre>{{ deposit_accounts | tojson }}</pre>
+
     <div class="container mt-5">
         <h1>Debit Accounts List</h1>
 
@@ -73,10 +75,11 @@
             <tbody>
                 {% for account in deposit_accounts %}
                 <tr>
-                    <td>{{ account.accountID }}</td>
-                    <td>{{ account.close_date }}</td>
-                    <td>{{ account.percent }}</td>
-                    <td>{{ account.balance }}</td>
+                    <td>{{ account.accountID or "Missing accountID" }}</td>
+                    <td>{{ account.close_date or "Missing close_date" }}</td>
+                    <td>{{ account.percent or "Missing percent" }}</td>
+                    <td>{{ account.balance or "Missing balance" }}</td>
+
                 </tr>
                 {% endfor %}
             </tbody>
@@ -100,6 +103,17 @@
                     <th>Limit</th>
                     <th>Remaining Limit</th>
                     <th>Balance</th>
+                    <th>
+                        <form action="{{ url_for('execute_transaction') }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="accountID" value="{{ account.accountID }}">
+                            <select name="transaction_type" class="form-select form-select-sm">
+                                <option value="1">Deposit</option>
+                                <option value="2">Withdraw</option>
+                            </select>
+                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="1" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </form>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -132,6 +146,7 @@
                     <th>Limit</th>
                     <th>Debt</th>
                     <th>Balance</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -141,6 +156,17 @@
                     <td>{{ account.limit }}</td>
                     <td>{{ account.debt }}</td>
                     <td>{{ account.balance }}</td>
+                    <td>
+                        <form action="{{ url_for('execute_transaction') }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="accountID" value="{{ account.accountID }}">
+                            <select name="transaction_type" class="form-select form-select-sm">
+                                <option value="1">Deposit</option>
+                                <option value="2">Withdraw</option>
+                            </select>
+                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="1" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -162,6 +188,7 @@
                     <th>Account Number</th>
                     <th>Expire Date</th>
                     <th>Debt</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -170,6 +197,16 @@
                     <td>{{ account.creditID }}</td>
                     <td>{{ account.expire_date }}</td>
                     <td>{{ account.debt }}</td>
+                    <td>
+                        <form action="{{ url_for('execute_transaction') }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="accountID" value="{{ account.creditID }}">
+                            <select name="transaction_type" class="form-select form-select-sm">
+                                <option value="1">Deposit</option>
+                            </select>
+                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="1" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
