@@ -5,7 +5,7 @@ import mysql.connector
 
 app = Flask(__name__)
 
-# Подключение к базе данных
+# пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -15,14 +15,14 @@ db = mysql.connector.connect(
 )
 
 def execute_query(query, params=None, dictionary=True):
-    #Функция для выполнения SQL-запроса с использованием глобального подключения
+    #пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SQL-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     db = get_db()
     cursor = db.cursor(dictionary=dictionary)
     cursor.execute(query, params or ())
     return cursor.fetchall()
 
 def get_user_info(uid):
-    #Функция получения ифны о пользователе
+    #пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     query = "SELECT * FROM users WHERE UID=%s"
     result = execute_query(query, (uid,))
     if result:
@@ -35,16 +35,16 @@ def get_user_info(uid):
     return {}
 
 def get_account_data(query, uid):
-    #Получить данные счетов.
+    #пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
     data = execute_query(query, (uid,))
     for account in data:
         for key, value in account.items():
-            if isinstance(value, Decimal):  # Если используется тип Decimal
+            if isinstance(value, Decimal):  # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ Decimal
                 account[key] = float(value)
     return data
 
 def get_db():
-    #Устанавливает или возвращает существующее подключение к базе данных
+    #пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     if 'db' not in g:
         g.db = mysql.connector.connect(
             host='localhost',
@@ -56,14 +56,14 @@ def get_db():
 
 @app.teardown_appcontext
 def close_db(exception):
-    #Закрывает подключение к базе данных после обработки запроса
+    #пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     db = g.pop('db', None)
     if db is not None:
         db.close()
 
 @app.route('/')
 def login():
-    print("Accessing login page")  # Для проверки
+    print("Accessing login page")  # пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     return render_template('login.html')
 
 
@@ -78,14 +78,14 @@ def auth():
     print(cursor.fetchone())
     
     cursor.execute("SELECT UID FROM users WHERE phone_number=%s", (phone,))
-    UID1 = cursor.fetchone()[0]  # Извлекаем значение UID
+    UID1 = cursor.fetchone()[0]  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ UID
 
     if user:
         cursor.execute("SELECT role FROM users WHERE phone_number=%s", (phone,))
         a_role = cursor.fetchone()
         print("tyt", a_role)
         if a_role[0] == "admin":
-            return redirect(url_for('adashboard', UID=UID1))  # Передаем UID как параметр
+            return redirect(url_for('adashboard', UID=UID1))  # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ UID пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         else:
             return redirect(url_for('udashboard', UID=UID1))
     else:
@@ -142,12 +142,27 @@ def udashboard(UID):
         WHERE op.UID=%s
         ORDER BY date DESC
     """
+    
+    credit_query = """
+        SELECT creditID, expire_date, debt
+        FROM credit
+        LEFT JOIN bank_accounts AS ba ON credit.creditID = ba.accountID
+        WHERE ba.UID=%s
+    """
 
     debit_accounts = get_account_data(debit_accounts_query, UID)
     deposit_accounts = get_account_data(deposit_accounts_query, UID)
     saving_accounts = get_account_data(saving_accounts_query, UID)
     credit_cards = get_account_data(credit_card_query, UID)
+    credit_accounts = get_account_data(credit_query, UID)
     operations = get_account_data(operations_query, UID)
+    
+    for operation in operations:
+        if operation['type'] == 1:
+            operation['type'] = 'Deposit'
+        else:
+            operation['type'] = 'Withdraw'
+            
 
     return render_template(
         'user_dashboard.html',
@@ -155,7 +170,8 @@ def udashboard(UID):
         debit_accounts=debit_accounts,
         deposit_accounts=deposit_accounts,
         saving_accounts=saving_accounts,
-        credit_cards=credit_cards,
+        cc_accounts = credit_cards,
+        credit_accounts = credit_accounts,
         operations=operations
     )
 
@@ -169,7 +185,7 @@ def execute_transaction():
 
         try:
             cursor = db.cursor()
-            # Вызываем хранимую процедуру
+            # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             cursor.callproc('add_operation', [int(transaction_type), int(accountID),  Decimal(amount)])
             db.commit()
         except Exception as e:
@@ -180,13 +196,13 @@ def execute_transaction():
         if referrer:
             return redirect(referrer)
         else:
-            return redirect(url_for('/'))  # Если referrer отсутствует
+            return redirect(url_for('/'))  # пїЅпїЅпїЅпїЅ referrer пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     else:
         return render_template('transaction.html')
     
 @app.route('/user_dashboard/accounts/<int:AID>')
 def accounts(AID):
-    #Определяет куда переправить
+    #пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     
     sql= """SELECT type FROM bank_accounts WHERE accountID = %s"""
     acc_type = execute_query(sql, (AID,))
