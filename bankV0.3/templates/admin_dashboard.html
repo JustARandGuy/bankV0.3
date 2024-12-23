@@ -23,103 +23,153 @@
         <h2>Admin Dashboard</h2>
         <p>Welcome to your dashboard!</p>
     </div>
-    
-        <div class="container py-5">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="card-title mb-0">Add Account</h5>
-                </div>
-                <div class="card-body">
-                    <form id="dynamic-form" method="POST" action="/add_account" class="row g-3">
-                        <div class="col-12">
-                            <label for="select-option" class="form-label">Choose Option:</label>
-                            <select id="select-option" name="account_type" class="form-select form-select-sm">
-                                <option value="">Choose...</option>
-                                <option value="1">Debit Account</option>
-                                <option value="2">Deposit Account</option>
-                                <option value="3">Saving Account</option>
-                                <option value="4">Credit Card</option>
-                                <option value="5">Credit</option>
-                            </select>
-                        </div>
 
-                        <!-- Option 1 -->
-                        <div id="fields-option1" class="fields col-12 hidden">
-                            <label for="field1" class="form-label">User ID:</label>
-                            <input type="number" id="field1" name="user_id" class="form-control" placeholder="Enter ID">
-                        </div>
+    <!-- Add menu -->
+    <div class="container py-5" style="user-select:none">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Add Account</h5>
+            </div>
+            <div class="card-body">
+                <form id="dynamic-form" method="POST" action="/add_account" class="row g-3">
+                    <div class="col-12">
+                        <label for="select-option" class="form-label">Choose Option:</label>
+                        <select id="select-option" name="account_type" class="form-select form-select-sm">
+                            <option value="">Choose...</option>
+                            <option value="1">Debit Account</option>
+                            <option value="2">Deposit Account</option>
+                            <option value="3">Saving Account</option>
+                            <option value="4">Credit Card</option>
+                            <option value="5">Credit</option>
+                        </select>
+                    </div>
 
-                        <!-- Option 2 -->
-                        <div id="fields-option2" class="fields col-12 hidden">
-                            <label for="field2" class="form-label">User ID:</label>
-                            <input type="number" id="field2" name="user_id" class="form-control" placeholder="Enter ID">
+                    <!-- Option 1 -->
+                    <div id="fields-option1" class="fields col-12 hidden">
+                        <label for="field1" class="form-label">User ID:</label>
+                        <input type="number" id="field1" name="user_id" class="form-control" placeholder="Enter ID">
+                    </div>
 
-                            <label for="field3" class="form-label">Deposit amount:</label>
-                            <input type="number" id="field3" name="deposit_amount" class="form-control" placeholder="Enter amount">
+                    <!-- Option 2 -->
+                    <div id="fields-option2" class="fields col-12 hidden">
+                        <label for="field2" class="form-label">User ID:</label>
+                        <input type="number" id="field2" name="user_id" class="form-control" placeholder="Enter ID">
 
-                            <label for="field4" class="form-label">Deposit percent:</label>
-                            <input type="number" id="field4" name="deposit_percent" class="form-control" placeholder="Enter percent">
+                        <label for="field3" class="form-label">Deposit amount:</label>
+                        <input type="number" id="field3" name="deposit_amount" class="form-control" placeholder="Enter amount">
 
-                            <label for="field5" class="form-label">Deposit period:</label>
-                            <input type="number" id="field5" name="deposit_period" class="form-control" placeholder="Enter period">
-                        </div>
+                        <label for="field4" class="form-label">Deposit percent:</label>
+                        <input type="number" id="field4" name="deposit_percent" class="form-control" placeholder="Enter percent">
 
-                        <!-- Option 3 -->
-                        <div id="fields-option3" class="fields col-12 hidden">
-                            <label for="field6" class="form-label">User ID:</label>
-                            <input type="number" id="field6" name="user_id" class="form-control">
-                            <label for="field7" class="form-label">Percent:</label>
-                            <input type="number" id="field7" name="percent" class="form-control">
-                        </div>
+                        <label for="field5" class="form-label">Deposit period:</label>
+                        <input type="number" id="field5" name="deposit_period" class="form-control" placeholder="Enter period">
+                    </div>
 
-                        <div id="fields-option4" class="fields col-12 hidden">
-                            <label for="field8" class="form-label">User ID:</label>
-                            <input type="number" id="field8" name="user_id" class="form-control">
-                            <label for="field9" class="form-label">Percent:</label>
-                            <input type="number" id="field9" name="percent" class="form-control">
-                            <label for="field10" class="form-label">Limit:</label>
-                            <input type="number" id="field10" name="limit" class="form-control">
-                        </div>
+                    <!-- Option 3 -->
+                    <div id="fields-option3" class="fields col-12 hidden">
+                        <label for="field6" class="form-label">User ID:</label>
+                        <input type="number" id="field6" name="user_id" class="form-control">
+                        <label for="field7" class="form-label">Percent:</label>
+                        <input type="number" id="field7" name="percent" class="form-control">
+                    </div>
 
-                        <div id="fields-option5" class="fields col-12 hidden">
-                            <label for="field11" class="form-label">User ID:</label>
-                            <input type="number" id="field11" name="user_id" class="form-control">
-                            <label for="field12" class="form-label">Percent:</label>
-                            <input type="number" id="field12" name="percent" class="form-control">
-                            <label for="field13" class="form-label">Amount:</label>
-                            <input type="number" id="field13" name="amount" class="form-control">
-                            <label for="field14" class="form-label">Period:</label>
-                            <input type="number" id="field14" name="period" class="form-control">
-                        </div>
+                    <div id="fields-option4" class="fields col-12 hidden">
+                        <label for="field8" class="form-label">User ID:</label>
+                        <input type="number" id="field8" name="user_id" class="form-control">
+                        <label for="field9" class="form-label">Percent:</label>
+                        <input type="number" id="field9" name="percent" class="form-control">
+                        <label for="field10" class="form-label">Limit:</label>
+                        <input type="number" id="field10" name="limit" class="form-control">
+                    </div>
+
+                    <div id="fields-option5" class="fields col-12 hidden">
+                        <label for="field11" class="form-label">User ID:</label>
+                        <input type="number" id="field11" name="user_id" class="form-control">
+                        <label for="field12" class="form-label">Percent:</label>
+                        <input type="number" id="field12" name="percent" class="form-control">
+                        <label for="field13" class="form-label">Amount:</label>
+                        <input type="number" id="field13" name="amount" class="form-control">
+                        <label for="field14" class="form-label">Period:</label>
+                        <input type="number" id="field14" name="period" class="form-control">
+                    </div>
 
 
-                        <!-- submit button -->
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-success w-100">Add</button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- submit button -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success w-100">Add</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const selectOption = document.getElementById('select-option');
-                const fields = document.querySelectorAll('.fields');
+    <!-- Delete menu -->
+    <div class="container py-5" style="user-select:none">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Manage Accounts</h5>
+            </div>
+            <div class="card-body p-4">
+                <table class="table table-hover table-bordered text-center align-middle">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col">Account Number</th>
+                            <th scope="col">User ID</th>
+                            <th scope="col">Account Type</th>
+                            <th scope="col">Balance / Debt</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in accounts %}
+                        <tr class="{% if account.balance > 0 %}table-warning{% elif account.balance < 0 %}table-danger{% else %}table-success{% endif %}">
+                            <td>{{ account.accountID }}</td>
+                            <td>{{ account.UID }}</td>
+                            <td>{{ account.type }}</td>
+                            <td>
+                                {{ account.balance }}
+                                {% if account.balance > 0 %} <span class="text-success">(Positive)</span>
+                                {% elif account.balance < 0 %} <span class="text-danger">(Negative)</span>
+                                {% else %} <span class="text-muted">(Zero)</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if account.balance == 0 %}
+                                <form action="/delete_account/{{ account.accountID }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                                {% else %}
+                                <button class="btn btn-secondary btn-sm" disabled>Delete</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                selectOption.addEventListener('change', function () {
-                    fields.forEach(field => {
-                        field.classList.add('hidden');
-                    });
 
-                    const selectedValue = selectOption.value;
-                    const selectedField = document.getElementById(`fields-option${selectedValue}`);
-                    if (selectedField) {
-                        selectedField.classList.remove('hidden');
-                    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectOption = document.getElementById('select-option');
+            const fields = document.querySelectorAll('.fields');
+
+            selectOption.addEventListener('change', function () {
+                fields.forEach(field => {
+                    field.classList.add('hidden');
                 });
+
+                const selectedValue = selectOption.value;
+                const selectedField = document.getElementById(`fields-option${selectedValue}`);
+                if (selectedField) {
+                    selectedField.classList.remove('hidden');
+                }
             });
-        </script>
+        });
+    </script>
 
 </body>
 </html>

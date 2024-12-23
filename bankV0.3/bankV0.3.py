@@ -2,6 +2,7 @@ from decimal import Decimal
 from os import name
 from flask import Flask, render_template, request, redirect, url_for, g
 import mysql.connector
+from mysql.connector import Error
 
 app = Flask(__name__)
 
@@ -94,13 +95,62 @@ def adashboard(UID):
     cursor.execute("SELECT * FROM users WHERE UID=%s", (UID,))
     result = cursor.fetchone()
     
+    sql = """SELECT ba.accountID, ba.UID, type, balance
+FROM bank_accounts AS ba
+RIGHT JOIN debits ON ba.accountID = debits.accountID
+WHERE ba.status = 1
+UNION
+
+SELECT ba.accountID, ba.UID, ba.type, balance
+FROM bank_accounts AS ba
+RIGHT JOIN deposits ON ba.accountID = deposits.accountID
+WHERE ba.status = 1
+UNION
+
+SELECT ba.accountID, ba.UID, ba.type, balance
+FROM bank_accounts AS ba
+RIGHT JOIN saving_accounts AS sa ON ba.accountID = sa.accountID
+WHERE ba.status = 1
+UNION
+
+SELECT ba.accountID, ba.UID, ba.type, debt
+FROM bank_accounts AS ba
+RIGHT JOIN credit_card AS cc ON ba.accountID = cc.accountID
+WHERE ba.status = 1
+UNION
+
+(SELECT ba.accountID, ba.UID, ba.type, debt
+FROM bank_accounts AS ba
+RIGHT JOIN credit AS cr ON ba.accountID = cr.creditID
+WHERE ba.status = 1)
+
+ORDER BY accountID
+
+"""
+    accounts = execute_query(sql)
+    
+    # poshadi 13542????? broo
+    for account in accounts:
+        if account['type'] == 1:
+            account['type'] = 'Debit'
+        elif account['type'] == 3:
+            account['type'] = 'Dposit'
+        elif account['type'] == 4:
+            account['type'] = 'Credit Card'
+        elif account['type'] == 5:
+            account['type'] = 'Saving Account'
+        elif account['type'] == 2:
+            account['type'] = 'Credit'
+        else:
+            account['type'] = 'unknown'
+
     user_info = get_user_info(UID)
     
 
     print('Request from users: ', result, '\n')
 
 
-    return render_template('admin_dashboard.html')
+    return render_template('admin_dashboard.html', accounts = accounts)
 
 @app.route('/add_account', methods=['POST'])
 def add_account():
@@ -143,6 +193,34 @@ def add_account():
     else:
         return "Invalid option selected", 400
     
+    db.commit()
+    
+    referrer = request.referrer
+    if referrer:
+        return redirect(referrer)
+    else:
+        return redirect(url_for('/'))  # ���� referrer �����������
+
+@app.route('/delete_account/<int:AID>', methods=['POST'])
+def delete_account(AID):
+    
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        
+        cursor.callproc('close_account', [AID])
+        db.commit()
+        message = "Account successfully deleted!"
+        status = "success"
+    except Error as e:
+        if e.errno == 1644:  
+            message = "Cannot delete debit account: Account is not empty or other restriction."
+        else:
+            message = f"An unexpected error occurred: {e.msg}"
+        status = "error"
+        db.rollback()
+
     db.commit()
     
     referrer = request.referrer
