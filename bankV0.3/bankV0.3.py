@@ -89,6 +89,36 @@ def auth():
     else:
         return "Invalid credentials"
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        phone = request.form.get('phone')
+        name = request.form.get('name')
+        surname = request.form.get('surname')
+        patronymic = request.form.get('patronymic')
+        birth_date = request.form.get('birth_date')
+        address = request.form.get('address')
+        sex = int(request.form.get('sex'))
+        email = request.form.get('email')
+        bank_day = int(request.form.get('bank_day'))
+        password = request.form.get('password')
+
+        db = get_db()
+        cursor = db.cursor()
+
+        try:
+            cursor.callproc('add_user', [phone, name, surname, patronymic, birth_date, address, sex, email, bank_day, password])
+            db.commit()
+            return redirect(url_for('login'))  
+        except mysql.connector.Error as err:
+            error_message = str(err)
+            return render_template('register.html', error=error_message)
+        finally:
+            cursor.close()
+            db.close()
+
+    return render_template('register.html')
+
 @app.route('/admin_dashboard/<int:UID>')
 def adashboard(UID):
     cursor = db.cursor()

@@ -31,8 +31,10 @@
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="static\css\login.css" />
     <Content Include="static\css\styles.css" />
     <Content Include="static\js\scripts.js" />
+    <Content Include="templates\register.html" />
     <Content Include="templates\admin_dashboard.html" />
     <Content Include="templates\dashboard.html" />
     <Content Include="templates\debit.html" />

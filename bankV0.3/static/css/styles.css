@@ -129,3 +129,59 @@
 .hidden {
     display: none;
 }
+
+/* General body styling */
+body {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Navigation styling */
+.nav {
+    background-color: #3a3f58;
+    border-bottom: 2px solid #ffb6c1;
+}
+
+.nav-link {
+    color: #fff !important;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+    .nav-link.active {
+        background-color: #ffb6c1 !important;
+        color: #3a3f58 !important;
+    }
+
+    .nav-link:hover {
+        background-color: #e0a3b9 !important;
+        color: #fff !important;
+        transition: background-color 0.3s;
+    }
+
+/* Table styling */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #f1f8ff;
+    transition: background-color 0.3s;
+}
+
+/* Buttons */
+.btn-outline-primary {
+    border: 2px solid #3a3f58;
+    color: #3a3f58;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #3a3f58;
+        color: #fff;
+    }
