@@ -37,9 +37,9 @@
                                 <option value="">Choose...</option>
                                 <option value="1">Debit Account</option>
                                 <option value="2">Deposit Account</option>
-                                <option value="saving">Saving Account</option>
-                                <option value="cc">Credit Card</option>
-                                <option value="credit">Credit</option>
+                                <option value="3">Saving Account</option>
+                                <option value="4">Credit Card</option>
+                                <option value="5">Credit</option>
                             </select>
                         </div>
 
@@ -104,21 +104,18 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const select = document.getElementById('select-option'); // Drop
-                const fields = document.querySelectorAll('.fields'); // All polya
+                const selectOption = document.getElementById('select-option');
+                const fields = document.querySelectorAll('.fields');
 
-                select.addEventListener('change', function () {
-                    const selectedValue = this.value; // get chosen value
-
+                selectOption.addEventListener('change', function () {
                     fields.forEach(field => {
-                        field.style.display = 'none'; // hide
+                        field.classList.add('hidden');
                     });
 
-                    if (selectedValue) {
-                        const selectedFields = document.getElementById(`fields-${selectedValue}`);
-                        if (selectedFields) {
-                            selectedFields.style.display = 'block';
-                        }
+                    const selectedValue = selectOption.value;
+                    const selectedField = document.getElementById(`fields-option${selectedValue}`);
+                    if (selectedField) {
+                        selectedField.classList.remove('hidden');
                     }
                 });
             });

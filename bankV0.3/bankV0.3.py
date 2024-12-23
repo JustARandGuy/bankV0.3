@@ -109,29 +109,31 @@ def add_account():
     account_type = request.form.get('account_type')  # Получение выбранного типа аккаунта
     
     
-    if account_type == 'debit':
-        user_id = request.form.get('user_id')
+    if account_type == '1':
+        user_id = int(request.form.get('user_id'))
         cursor.callproc('add_debit', [user_id, 1])
+
+        print(user_id)
         
-    elif account_type == 'deposit':
+    elif account_type == '2':
         user_id = request.form.get('user_id')
         amount = request.form.get('deposit_amount')
         period = request.form.get('deposit_period')
         percent = request.form.get('deposit_percent')
         cursor.callproc('add_deposit', [user_id, amount, period, percent, 1])
     
-    elif account_type == 'saving':
+    elif account_type == '3':
         user_id = request.form.get('user_id')
         percent = request.form.get('percent')
         cursor.callproc('add_saving_account', [user_id, percent, 1])
     
-    elif account_type == 'cc':
+    elif account_type == '4':
         user_id = request.form.get('user_id')
         percent = request.form.get('percent')
         limit = request.form.get('limit')
         cursor.callproc('add_credit_card', [user_id, percent, limit])
     
-    elif account_type == 'credit':
+    elif account_type == '5':
         user_id = request.form.get('user_id')
         amount = request.form.get('amount')
         period = request.form.get('period')
@@ -140,6 +142,8 @@ def add_account():
     
     else:
         return "Invalid option selected", 400
+    
+    db.commit()
     
     referrer = request.referrer
     if referrer:
