@@ -75,19 +75,27 @@ def auth():
     sql = """
     SELECT * FROM users
     WHERE phone_number = %s AND password = %s
-"""
-    user = execute_query(sql,(phone, password))[0]
-    UID = user['UID']
+    """
     
-    if UID:
+    try:
+        result = execute_query(sql, (phone, password))
+        
+        if not result:
+            return "User not found or invalid credentials", 401  # HTTP 401 Unauthorized
+        
+        user = result[0]
+        UID = user['UID']
+        
         a_role = user['role']
-        print('role: ', a_role)
         if a_role == "admin":
-            return redirect(url_for('adashboard', UID=UID))  
+            return redirect(url_for('adashboard', UID=UID))
         else:
             return redirect(url_for('udashboard', UID=UID))
-    else:
-        return "Invalid credentials"
+    
+    except Exception as e:
+        print(f"Error during authentication: {e}")
+        return "An error occurred during authentication. Please try again later.", 500  # HTTP 500 Internal Server Error
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -100,14 +108,14 @@ def register():
         address = request.form.get('address')
         sex = int(request.form.get('sex'))
         email = request.form.get('email')
-        bank_day = int(request.form.get('bank_day'))
+        bankd = str(request.form.get('bank_day'))
         password = request.form.get('password')
 
         db = get_db()
         cursor = db.cursor()
 
         try:
-            cursor.callproc('add_user', [phone, name, surname, patronymic, birth_date, address, sex, email, bank_day, password])
+            cursor.callproc('add_user', [phone, name, surname, patronymic, birth_date, address, sex, email, bankd, password])
             db.commit()
             return redirect(url_for('login'))  
         except mysql.connector.Error as err:
@@ -159,7 +167,10 @@ ORDER BY accountID
 """
     accounts = execute_query(sql)
     
-    # poshadi 13542????? broo
+    sql = """SELECT UID, phone_number, name, surname, patronymic FROM users """
+
+    users1 = execute_query(sql)
+    
     for account in accounts:
         if account['type'] == 1:
             account['type'] = 'Debit'
@@ -175,12 +186,9 @@ ORDER BY accountID
             account['type'] = 'unknown'
 
     user_info = get_user_info(UID)
-    
-
-    print('Request from users: ', result, '\n')
 
 
-    return render_template('admin_dashboard.html', accounts = accounts)
+    return render_template('admin_dashboard.html', accounts = accounts, users = users1)
 
 @app.route('/add_account', methods=['POST'])
 def add_account():

@@ -12,9 +12,6 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Operations</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="{{ url_for('login') }}">Exit</a>
         </li>
     </ul>
@@ -150,26 +147,52 @@
         </div>
     </div>
 
+    <!-- Users list -->
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const selectOption = document.getElementById('select-option');
-            const fields = document.querySelectorAll('.fields');
+    <div class="container py-5" style="user-select:none">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>UID</th>
+                    <th>Phone</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Patronymic</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.UID }}</td>
+                    <td>{{ user.phone_number }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.surname }}</td>
+                    <td>{{ user.patronymic }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-            selectOption.addEventListener('change', function () {
-                fields.forEach(field => {
-                    field.classList.add('hidden');
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const selectOption = document.getElementById('select-option');
+                const fields = document.querySelectorAll('.fields');
+
+                selectOption.addEventListener('change', function () {
+                    fields.forEach(field => {
+                        field.classList.add('hidden');
+                    });
+
+                    const selectedValue = selectOption.value;
+                    const selectedField = document.getElementById(`fields-option${selectedValue}`);
+                    if (selectedField) {
+                        selectedField.classList.remove('hidden');
+                    }
                 });
-
-                const selectedValue = selectOption.value;
-                const selectedField = document.getElementById(`fields-option${selectedValue}`);
-                if (selectedField) {
-                    selectedField.classList.remove('hidden');
-                }
             });
-        });
-    </script>
+        </script>
 
 </body>
 </html>
