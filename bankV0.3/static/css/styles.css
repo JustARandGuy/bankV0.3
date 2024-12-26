@@ -1,0 +1,187 @@
+
+.balance_rectangle {
+    width: 260px; /* Ширина прямоугольника */
+    height: 80px; /* Высота прямоугольника */
+    background-color: #98c4e3; /* Цвет прямоугольника */
+    border-radius: 20px; /* Закругленные края */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
+    margin: 35px;
+    user-select: none;
+    display: flex; /* Включаем Flexbox */
+    justify-content: flex-start; /* Выравнивание по горизонтали (слева) */
+    align-items: center; /* Выравнивание по вертикали (по центру) */
+}
+
+.balance_text {
+    margin: 20px;
+    text-align: left; /* Центрирование текста по горизонтали */
+    line-height: 80px; /* Высота строки равна высоте прямоугольника для вертикального центрирования */
+    font-size: 24px; /* Размер шрифта */
+    color: #ffffff; /* Цвет текста */
+    font-weight: bold; /* Жирный текст */
+    font-family: Arial, sans-serif; /* Семейство шрифтов */
+}
+
+
+.nav-link.active {
+    height: 100%;
+    background-color: #d8bfd8; /* Цвет фона активного таба */
+    color: black; /* Цвет текста */
+    border-radius: 0px; /* Закругленные углы */
+    padding: 10px 40px; /* Отступы внутри */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.0); /* Тень для объема */
+    display: flex; /* Для выравнивания текста по центру */
+    align-items: center;
+   
+}
+
+.nav {
+    position: fixed;
+    top: 0; /* Привязываем к верхнему краю */
+    left: 0; /* Привязываем к левому краю */
+    width: 100%;
+    height: 60px; /* Устанавливает фиксированную высоту для всего блока навигации */
+    user-select: none;
+    z-index: 1000; /* Устанавливаем приоритет отображения */
+    background-color: #F0FFF0;
+    position: relative;
+    border-bottom: 3px solid #4169E1; /* Цвет и толщина линии */
+    font-weight: bold; /* Для выделения активного элемента */
+}
+
+.nav-link:hover {
+    background-color: #94c6d1; /* Цвет при наведении */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Увеличиваем тень при наведении */
+}
+
+.nav-link {
+    height: 100%;
+    display: flex; /* Для выравнивания текста по центру */
+    align-items: center; /* Вертикальное выравнивание текста */
+}
+
+.nav-item {
+    height: 100%; /* Элементы списка растягиваются по высоте родительского контейнера */
+    display: flex; /* Для выравнивания текста по центру */
+    align-items: center; /* Вертикальное выравнивание текста */
+    border-radius: 0px;
+}
+
+.nav-item active {
+    height: 100%; /* Элементы списка растягиваются по высоте родительского контейнера */
+    display: flex; /* Для выравнивания текста по центру */
+    align-items: center; /* Вертикальное выравнивание текста */
+}
+
+.underline {
+    width: 100%; /* Линия на всю ширину экрана */
+    height: 1px; /* Толщина линии */
+    background-color: #000; /* Цвет линии (черный) */
+    margin: 0; /* Убираем отступы */
+    padding: 0;
+}
+
+.custom-button {
+    width: 120px; /* Фиксированная ширина кнопки */
+    height: 50px; /* Высота кнопки */
+    font-size: 18px; /* Размер текста */
+    text-transform: uppercase; /* Преобразование текста в верхний регистр */
+    border-radius: 10px; /* Скругление углов кнопки */
+    background-color: #007bff; /* Цвет кнопки */
+    border: none; /* Убираем стандартную границу */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень для кнопки */
+    color: #fff; /* Цвет текста */
+    /* Убираем позиционирование, чтобы кнопка находилась в ячейке сетки */
+}
+
+.custom-button:hover {
+    background-color: #0056b3; /* Цвет при наведении */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Увеличиваем тень при наведении */
+}
+
+.content {
+    display: grid;
+    grid-template-rows: 50% 50%; /* Две строки */
+    gap: 20px; /* Отступ между строками */
+    background-color: black;
+}
+
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    align-content: center;
+    margin: 20px;
+    background-color: darkslateblue;
+    height: 100vh; /* Высота контейнера равна высоте экрана */
+    align-content: start;
+    align-items: start;
+}
+
+
+
+.daform {
+    margin: 20px;
+    user-select: none;
+}
+
+.hidden {
+    display: none;
+}
+
+/* General body styling */
+body {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Navigation styling */
+.nav {
+    background-color: #3a3f58;
+    border-bottom: 2px solid #ffb6c1;
+}
+
+.nav-link {
+    color: #fff !important;
+    padding: 10px 20px;
+    font-weight: 600;
+}
+
+    .nav-link.active {
+        background-color: #ffb6c1 !important;
+        color: #3a3f58 !important;
+    }
+
+    .nav-link:hover {
+        background-color: #e0a3b9 !important;
+        color: #fff !important;
+        transition: background-color 0.3s;
+    }
+
+/* Table styling */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #f1f8ff;
+    transition: background-color 0.3s;
+}
+
+/* Buttons */
+.btn-outline-primary {
+    border: 2px solid #3a3f58;
+    color: #3a3f58;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #3a3f58;
+        color: #fff;
+    }
