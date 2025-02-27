@@ -6,13 +6,13 @@ from mysql.connector import Error
 
 app = Flask(__name__)
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="bank",
-    charset='utf8mb4'
-)
+#db = mysql.connector.connect(
+#    host="localhost",
+#    user="root",
+#    password="",
+#    database="bank",
+#    charset='utf8mb4'
+#)
 
 def execute_query(query, params=None, dictionary=True):
     
@@ -129,6 +129,8 @@ def register():
 
 @app.route('/admin_dashboard/<int:UID>')
 def adashboard(UID):
+    db = get_db()
+
     cursor = db.cursor()
     cursor.execute("SELECT * FROM users WHERE UID=%s", (UID,))
     result = cursor.fetchone()
