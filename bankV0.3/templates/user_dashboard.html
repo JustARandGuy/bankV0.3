@@ -5,8 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accounts</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
+    <!-- Top menu -->
+    <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login') }}">Exit</a>
+        </li>
+    </ul>
+
     <div class="container mt-5">
         <h1>Debit Accounts List</h1>
 
@@ -89,6 +100,7 @@
                     <th>Limit</th>
                     <th>Remaining Limit</th>
                     <th>Balance</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -99,6 +111,17 @@
                     <td>{{ account.limit }}</td>
                     <td>{{ account.spent_limit }}</td>
                     <td>{{ account.balance }}</td>
+                    <td>
+                        <form action="{{ url_for('execute_transaction') }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="accountID" value="{{ account.accountID }}">
+                            <select name="transaction_type" class="form-select form-select-sm">
+                                <option value="1">Deposit</option>
+                                <option value="2">Withdraw</option>
+                            </select>
+                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="1" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -121,6 +144,7 @@
                     <th>Limit</th>
                     <th>Debt</th>
                     <th>Balance</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -130,6 +154,17 @@
                     <td>{{ account.limit }}</td>
                     <td>{{ account.debt }}</td>
                     <td>{{ account.balance }}</td>
+                    <td>
+                        <form action="{{ url_for('execute_transaction') }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="accountID" value="{{ account.accountID }}">
+                            <select name="transaction_type" class="form-select form-select-sm">
+                                <option value="1">Deposit</option>
+                                <option value="2">Withdraw</option>
+                            </select>
+                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="1" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -144,13 +179,14 @@
     <div class="container mt-5">
         <h1>Credit Accounts List</h1>
 
-        {% if cc_accounts %}
+        {% if credit_accounts %}
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Account Number</th>
                     <th>Expire Date</th>
                     <th>Debt</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -159,6 +195,16 @@
                     <td>{{ account.creditID }}</td>
                     <td>{{ account.expire_date }}</td>
                     <td>{{ account.debt }}</td>
+                    <td>
+                        <form action="{{ url_for('execute_transaction') }}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="accountID" value="{{ account.accountID }}">
+                            <select name="transaction_type" class="form-select form-select-sm">
+                                <option value="1">Deposit</option>
+                            </select>
+                            <input type="number" name="amount" class="form-control form-control-sm" placeholder="Amount" min="1" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
